@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src/**/*", "src/components/shared/.js"],
+  "exclude": ["node_modules"]
+}
