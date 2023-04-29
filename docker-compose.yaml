@@ -1,0 +1,152 @@
+version: '3.8'
+services:
+  auth_db:
+    container_name: 'auth_db'
+    image: postgres
+    environment:
+      - POSTGRES_DB=${AUTH_DB_NAME}
+      - POSTGRES_USER=${AUTH_DB_USERNAME}
+      - POSTGRES_PASSWORD=${AUTH_DB_PASSWORD}
+    volumes:
+      - auth_db:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - ayur_auth
+
+  auth: # auth service container
+    container_name: 'auth'
+    build:
+      context: auth
+    env_file:
+      - "auth/.env"
+    restart: always
+    networks:
+      - ayur
+      - ayur_auth
+    depends_on:
+      - auth_db
+
+  hospital_db:
+    container_name: 'hospital_db'
+    image: postgres
+    environment:
+      - POSTGRES_DB=${HOSPITAL_DB_NAME}
+      - POSTGRES_USER=${HOSPITAL_DB_USERNAME}
+      - POSTGRES_PASSWORD=${HOSPITAL_DB_PASSWORD}
+    volumes:
+      - hospital_db:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - ayur_hospital
+    depends_on:
+      - auth
+
+  hospital:
+    container_name: 'hospital'
+    build:
+      context: hospital
+    env_file:
+      - hospital/.env
+    restart: always
+    networks:
+      - ayur_hospital
+      - ayur
+    depends_on:
+      - hospital_db
+
+  checkup_db:
+    container_name: 'checkup_db'
+    image: postgres
+    environment:
+      - POSTGRES_DB=${CHECKUP_DB_NAME}
+      - POSTGRES_USER=${CHECKUP_DB_USERNAME}
+      - POSTGRES_PASSWORD=${CHECKUP_DB_PASSWORD}
+    volumes:
+      - checkup_db:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - ayur_checkup
+    depends_on:
+      - auth
+
+  checkup:
+    container_name: 'checkup'
+    build:
+      context: checkups
+    env_file:
+      - checkups/.env
+    restart: always
+    networks:
+      - ayur_checkup
+      - ayur
+    depends_on:
+      - checkup_db
+
+  user_data_db:
+    container_name: 'user_data_db'
+    image: postgres
+    environment:
+      - POSTGRES_DB=${USER_DB_NAME}
+      - POSTGRES_USER=${USER_DB_USERNAME}
+      - POSTGRES_PASSWORD=${USER_DB_PASSWORD}
+    volumes:
+      - user_data_db:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - ayur_user_data
+    depends_on:
+      - auth
+
+  user_data:
+    container_name: 'user_data'
+    build:
+      context: user
+    env_file:
+      - user/.env
+    restart: always
+    networks:
+      - ayur_user_data
+      - ayur
+    depends_on:
+      - user_data_db
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.23.4-alpine
+    ports:
+      - "80:80"
+    environment:
+      - HOST=${HOST}
+    networks:
+      - ayur
+
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/default.conf
+      - ./nginx/run.sh:/run.sh
+
+    command: "/bin/sh -c 'chmod +x ./run.sh; ./run.sh && nginx -g \"daemon off;\"'"
+    restart: always
+    depends_on:
+      - auth
+      - user_data
+      - hospital
+      - checkup
+
+
+volumes:
+  auth_db:
+  hospital_db:
+  checkup_db:
+  user_data_db:
+
+networks:
+  ayur:  # network to connect all ayur services, so nginx can redirect traffic
+    name: ayur
+  ayur_auth:
+    name: ayur_auth
+  ayur_user_data:
+    name: ayur_user_data
+  ayur_hospital:
+    name: ayur_hospital
+  ayur_checkup:
+    name: ayur_checkup
