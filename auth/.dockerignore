@@ -1,0 +1,7 @@
+.gitignore
+.dockerignore
+Dockerfile
+*.yaml
+test.py
+.idea
+Readme.txt
