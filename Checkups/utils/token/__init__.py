@@ -23,12 +23,7 @@ async def validate_token(request: Request) -> StaffToken | UserToken:
 
         token = decode_token(token[1])
 
-        if token["aud"] not in _jwt.aud:
-            """
-            Token is invalid if it is not meant for hospital
-            """
-            raise exceptions.HTTP_401("Invalid Token")
-        return StaffToken(**token)
+        return StaffToken(**token) if token["aud"] == "hospital" else UserToken(**token)
 
     except ExpiredSignatureError as e:
         logging.error(e)
