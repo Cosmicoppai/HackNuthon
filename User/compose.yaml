@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  user_data_db:
+    container_name: 'user_data_db'
+    image: postgres
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - checkup_db:/var/lib/postgresql/data
+    ports:
+      - "9564:5432"
+    restart: always
+    networks:
+      - ayur_user_data
+
+  user_data:
+    container_name: 'user_data'
+    build:
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - ayur_user_data
+#      - ayur
+    depends_on:
+      - user_data_db
+
+volumes:
+  checkup_db:
+
+networks:
+  ayur_user_data:
+    driver: 'bridge'
+#  ayur:
+#    external: true
