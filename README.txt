@@ -1,5 +1,5 @@
 
-git clone https://github.com/Ayur-service/engine.git
+git clone https://github.com/Cosmicoppai/HackNuthon.git
 
 ./start.sh
 
