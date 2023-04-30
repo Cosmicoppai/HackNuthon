@@ -6,7 +6,6 @@ import {
   FormControl,
   OutlinedInput,
   InputLabel,
-  MenuItem,
   Card,
   CardHeader,
   CardContent,
@@ -133,7 +132,7 @@ const AddRecord = () => {
         console.log(err)
       })
 
-  })
+  }, [])
 
   return (
     <form onSubmit={formik.handleSubmit}>
