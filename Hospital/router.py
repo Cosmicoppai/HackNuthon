@@ -32,7 +32,7 @@ def get_staff(staff_data=Depends(validate_token)):
 @hospital_router.get("/doctors", status_code=status.HTTP_200_OK, tags=["doctors"])
 def get_doctors(staff_data=Depends(validate_token)) -> List[Doctor]:
     doctors = []
-    for doctor in DataBase().session.query(Doctors).all():
+    for doctor in DataBase().session.query(Doctors).filter(Doctors.hospital_id == staff_data.hospital_id):
         doctors.append(Doctor(**doctor.dict()))
     return doctors
 

@@ -16,6 +16,6 @@ async def process_report_files(files: List[UploadFile], file_type: str, checkup_
         file_path = file_path.joinpath(file.filename)
         with open(file_path, "wb+") as _file:
             _file.write(await file.read())
-            files_path.append(file_path.__str__().replace(str(FileConfig.checkup_folder), f"{OriginSettings}{StaticFilesConfig}"))
+            files_path.append(file_path.__str__().replace(str(FileConfig.checkup_folder), f"{OriginSettings().origin}{StaticFilesConfig.file_url}"))
     return files_path
 

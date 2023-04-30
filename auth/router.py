@@ -15,7 +15,7 @@ from model import User, UserToken, UserLogin, UserSignUp, StaffLogin, StaffSignU
 from utils.password import hash_password, verify_password
 from utils.otp import send_otp, resend_otp, verify_otp
 from _token import validate_token, create_access_token
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from logging import info
 
 auth_router = APIRouter()
@@ -39,15 +39,16 @@ def get_user(user: User) -> User:
     return User(**_user.dict())
 
 
-def _get_staff(staff_username: str) -> Staff:
-    staff = DataBase().session.query(HospitalStaffModel).filter(HospitalStaffModel.username == staff_username).first()
+def _get_staff(hospital_id: str, staff_username: str) -> Staff:
+    staff = DataBase().session.query(HospitalStaffModel).filter(and_(HospitalStaffModel.username == staff_username,
+                                                                HospitalStaffModel.hospital_id == hospital_id)).first()
     if not staff:
-        raise exceptions.HTTP_404("username not found")
+        raise exceptions.HTTP_404(f"username not found for {hospital_id}")
     return Staff(**staff.dict())
 
 
 def login_staff(staff: StaffLogin) -> Dict[str, str]:
-    staff = _get_staff(staff.username.lower())
+    staff = _get_staff(staff.hospital_id.lower(), staff.username.lower())
     if not verify_password(staff.password, hash_password(staff.password)):
         raise exceptions.HTTP_401("Invalid Username or Password")
 

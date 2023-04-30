@@ -40,7 +40,7 @@ def update_user(ayur_id: str, user_data: UpdateDetails, token_data: UserToken = 
         raise exceptions.HTTP_400("One or more field should be present")
 
     session = DataBase().session
-    session.query(UsersData).filter(UsersData.ayur_id == token_data.sub).update(user_data.dict(exclude_none=True    ))
+    session.query(UsersData).filter(UsersData.ayur_id == token_data.sub).update(user_data)
     session.commit()
 
 
@@ -67,3 +67,12 @@ async def create_user_data(user_data: BasicDetails = Depends(),
     session.commit()
 
     return JSONResponse({"msg": "user data successfully added"}, status_code=status.HTTP_201_CREATED)
+
+@user_router.get(StaticFilesConfig.file_url+"/{ayur_id}/{file_name}")
+def get_report(ayur_id: str, file_name: str, token_data: UserToken = Depends(validate_token)) -> List[str]:
+    session = DataBase().session
+    if not session.query(UsersData.photo).filter(UsersData.ayur_id == ayur_id).first():
+        raise exceptions.HTTP_404("File Not Found!")
+
+    file_path = FileConfig.image_folder.joinpath(f"{ayur_id}/{file_name}")
+    return FileResponse(file_path)

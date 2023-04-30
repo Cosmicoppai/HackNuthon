@@ -30,17 +30,15 @@ async def validate_token(request: Request) -> UserToken | StaffToken:
 
         token = decode_token(token[1])
 
-        # if token["expire"] < datetime.utcnow().timestamp():
-
         return StaffToken(**token) if token["aud"] == "hospital" else UserToken(**token)
 
     except ExpiredSignatureError as e:
         logging.error(e)
         raise exceptions.HTTP_401("Expired Token")
 
-    except JWTError as e:
+    except JWTError or jwt.exceptions.InvalidAudienceError as e:
         logging.error(e)
-        raise exceptions.HTTP_401(e)
+        raise exceptions.HTTP_401("Invalid Token")
 
     except KeyError:  # when header is missing
         raise exceptions.HTTP_400("Required Headers are missing")
