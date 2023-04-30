@@ -101,4 +101,4 @@ Example
 ![search](/frontend/src/assets/images/reports.jpg)
 ![search](/frontend/src/assets/images/user_account.jpg)
 
-<video src='https://user-images.githubusercontent.com/66635990/235341310-1ae6de76-dc21-44c3-86b9-111bbc6dc757.mp4' width=180></video>
+<video src='https://user-images.githubusercontent.com/66635990/235344130-6b462a22-b3e4-4dbd-948b-97b406c7ba34.mp4' width=180></video>
