@@ -1,6 +1,6 @@
 <div align="center">
 
-![Banner](frontend/src/assests/images/logos/ayur_logo_.big.png)
+![Banner](/frontend/src/assets/images/logos/ayur_logo_big.png)
 
 
 [![GitHub forks](https://img.shields.io/github/forks/cosmicoppai/HackNuthon?color=lightgrey)](https://github.com/Cosmicoppai/HackNuthon/network)
@@ -96,9 +96,9 @@ Example
 
 ## 🎥 Demo
 
-![search](frontend/src/assests/images/demo_images/login.png)
-![search](frontend/src/assests/images/demo_images/dashboard.png)
-![search](frontend/src/assests/images/demo_images/reports.png)
-![search](frontend/src/assests/images/demo_images/user_account.png)
+![search](/frontend/src/assets/images/login.jpg)
+![search](/frontend/src/assets/images/dashboard.jpg)
+![search](/frontend/src/assets/images/reports.jpg)
+![search](/frontend/src/assets/images/user_account.jpg)
 
 <video src='https://user-images.githubusercontent.com/66635990/235341310-1ae6de76-dc21-44c3-86b9-111bbc6dc757.mp4' width=180></video>
